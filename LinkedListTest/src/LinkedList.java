@@ -132,13 +132,15 @@ public class LinkedList {
 		// Insert node at the specific position
 		else if (mode.equals(INSERT_TO_THE_POSITION)) {
 
-			System.out.println("position do you want to insert?");
+			System.out
+					.println("You can insert a node after the position, so Which position do you want to insert ?");
 			int position = Integer.parseInt(sc.nextLine());
 
 			// Insert node after the position.
 			if (position != 0 && position > 0) {
 
-				//the tmp is at the first node, so position must -1, beacuse it start from the first one
+				// the tmp is at the first node, so position must -1, beacuse it
+				// start from the first one
 				Node tmp = first;
 				Node nextNode = null;
 				position -= 1;
@@ -241,13 +243,13 @@ public class LinkedList {
 		// Remove the last node.
 		else if (mode.equals(REMOVE_THE_LAST)) {
 
-			//tmp is at pointer's next position
+			// tmp is at pointer's next position
 			Node tmp = pointer.next;
 
-			//move the pointer, does tmp at the last position?
+			// move the pointer, does tmp at the last position?
 			while (tmp.next != null) {
 
-				//move pointer to next, and also move tmp to the next.
+				// move pointer to next, and also move tmp to the next.
 				pointer = pointer.next;
 				tmp = tmp.next;
 			}
