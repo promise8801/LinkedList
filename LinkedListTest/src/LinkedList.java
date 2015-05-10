@@ -4,7 +4,6 @@ public class LinkedList {
 
 	private Node first, last;
 	private Scanner sc;
-	private LinkedList ll;
 
 	// What do you want to do?
 	private final static String DELETE_NODE = "d";
@@ -20,8 +19,6 @@ public class LinkedList {
 	private final static String REMOVE_THE_FIRST = "f";
 	private final static String REMOVE_THE_LAST = "l";
 	private final static String REMOVE_THE_POSITION = "m";
-
-	// private LinkedList linkedList = new LinkedList();
 
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
@@ -58,6 +55,7 @@ public class LinkedList {
 
 		linkedList.showNode();
 
+		// Choose mode
 		while (true) {
 
 			System.out.println("Type in a word to continue...\n"
@@ -68,6 +66,7 @@ public class LinkedList {
 			linkedList.sc = new Scanner(System.in);
 			String mode = linkedList.sc.nextLine();
 
+			// Choose remove mode.
 			if (mode.equals(DELETE_NODE)) {
 
 				System.out.println("You can remove node at position.\n"
@@ -78,16 +77,18 @@ public class LinkedList {
 				linkedList.showNode();
 			}
 
+			// Choose insert mode.
 			else if (mode.equals(INSERT_NODE)) {
 
 				System.out.println("You can insert node at position.\n"
-						+ "f = before first\n" + "l = after last\n"
+						+ "f = before first node\n" + "l = after last node\n"
 						+ "m = after position where you want to insert");
 
 				linkedList.insertNode(linkedList.sc.nextLine());
 				linkedList.showNode();
 			}
 
+			// Choose show mode.
 			else if (mode.equals(SHOW_NODE)) {
 
 				linkedList.showNode();
@@ -108,59 +109,69 @@ public class LinkedList {
 	 *            : you can insert node at position. e.g.: f = first, l = last,
 	 *            m = position
 	 */
-	private void insertNode(String position) {
+	private void insertNode(String mode) {
 
 		Node newNode;
-		// insert at first position
-		if (position.equals(INSERT_TO_THE_FIRST)) {
 
-			Node tmp = first;
+		// insert before first position
+		if (mode.equals(INSERT_TO_THE_FIRST)) {
 
-			if (first.mId == 0)
-				increaseNodeId(tmp);
-
-			newNode = new Node(0, "Insert to the first", 101);
+			newNode = new Node(00000, "Insert to the first", 101);
 			newNode.next = first;
 			first = newNode;
 		}
 
 		// insert at last position
-		else if (position.equals(INSERT_TO_THE_LAST)) {
+		else if (mode.equals(INSERT_TO_THE_LAST)) {
 
-			newNode = new Node(last.mId + 1, "Insert to the last node", 102);
+			newNode = new Node(999, "Insert to the last node", 102);
 			last.next = newNode;
+			last = newNode;
+		}
+
+		// Insert node at the specific position
+		else if (mode.equals(INSERT_TO_THE_POSITION)) {
+
+			System.out.println("position do you want to insert?");
+			int position = Integer.parseInt(sc.nextLine());
+
+			// Insert node after the position.
+			if (position != 0 && position > 0) {
+
+				//the tmp is at the first node, so position must -1, beacuse it start from the first one
+				Node tmp = first;
+				Node nextNode = null;
+				position -= 1;
+
+				while (position > 0) {
+
+					tmp = tmp.next;
+					position -= 1;
+
+					// The position is out of last node
+					if (tmp == null) {
+
+						System.out.println("Out of range");
+						return;
+					}
+				}
+
+				nextNode = tmp.next;
+
+				newNode = new Node(555, "insert in position", 50);
+				tmp.next = newNode;
+				newNode.next = nextNode;
+
+			}
+
+			// Type in 0 or not number
+			else {
+				System.out.println("Error!");
+			}
 
 		}
 
-		// if position out of range , check!
-		else if (position.equals(INSERT_TO_THE_POSITION)) {
-
-			System.out.println("Where do you want to insert?");
-			int where = Integer.parseInt(sc.nextLine());
-
-			if (where == first.mId || where == 0) {
-
-				insertNode(INSERT_TO_THE_FIRST);
-				return;
-			}
-
-			Node tmp = first;
-			Node nextNode = null;
-
-			while (tmp.next.mId != where) {
-
-				tmp = tmp.next;
-			}
-
-			increaseNodeId(tmp.next);
-
-			nextNode = tmp.next;
-
-			newNode = new Node(tmp.mId + 1, "insert in position", 50);
-			tmp.next = newNode;
-			newNode.next = nextNode;
-		}
-
+		// Does not type in f, m, l.
 		else
 			System.out.println("Error!");
 
@@ -182,33 +193,73 @@ public class LinkedList {
 			return;
 		}
 
-		else if (mode.equals(REMOVE_THE_POSITION)
-				|| mode.equals(REMOVE_THE_LAST)) {
+		// Remove the specific node
+		else if (mode.equals(REMOVE_THE_POSITION)) {
 
-			System.out.println("Where do you want to remove?");
-
+			System.out.println("Which do you want to remove?");
 			int position = Integer.parseInt(sc.nextLine());
 
-			while (pointer != null) {
+			// the position is the first one
+			if (position == 1) {
 
-				if (position == first.mId) {
+				deleteNode(REMOVE_THE_FIRST);
 
-					deleteNode(REMOVE_THE_FIRST);
-					return;
-				} else {
-					if (pointer.next.mId == position) {
+				// not the first one
+			} else {
 
-						Node tmp = pointer.next;
-						pointer.next = tmp.next;
+				Node tmp = null;
+				position -= 1;
 
+				// move the pointer to the next
+				while (position > 0) {
+
+					position -= 1;
+
+					// tmp move to pointer's position, and pointer move to the
+					// next position
+					tmp = pointer;
+					pointer = pointer.next;
+
+					// if position > linked list size, then display the error
+					// message
+					if (pointer == null) {
+
+						System.out.println("Position is out of range.");
 						return;
-
-					} else
-						pointer = pointer.next;
-
+					}
 				}
+
+				// If the position is the last node, then call method to remove
+				// the last one.
+				if (pointer.next != null)
+					tmp.next = pointer.next;
+				else
+					deleteNode(REMOVE_THE_LAST);
 			}
 		}
+
+		// Remove the last node.
+		else if (mode.equals(REMOVE_THE_LAST)) {
+
+			//tmp is at pointer's next position
+			Node tmp = pointer.next;
+
+			//move the pointer, does tmp at the last position?
+			while (tmp.next != null) {
+
+				//move pointer to next, and also move tmp to the next.
+				pointer = pointer.next;
+				tmp = tmp.next;
+			}
+
+			last = pointer;
+			last.next = null;
+
+		}
+
+		else
+			System.out.println("Error!");
+
 	}
 
 	/**
@@ -226,29 +277,5 @@ public class LinkedList {
 
 			tmp = tmp.next;
 		}
-
 	}
-
-	private int inputInteger(Scanner sc) {
-
-		int inInteger = Integer.parseInt(sc.nextLine());
-
-		return inInteger;
-	}
-
-	/**
-	 * You can use this method to increase mId.
-	 * 
-	 * @param tmp
-	 *            : The start line to increase mId.
-	 */
-	private void increaseNodeId(Node tmp) {
-
-		while (tmp != null) {
-
-			tmp.mId += 1;
-			tmp = tmp.next;
-		}
-	}
-
 }
